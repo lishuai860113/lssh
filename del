@@ -1,0 +1,17 @@
+#!/bin/bash
+#防止误删除脚本
+#usage: del filename ;更名为.rm.filename，并记录删除信息在~/.ldel中
+#del ;根据~/.ldel中的信息删除文件,
+if [ $# == 0 ] ;
+then
+  awk '{print $1}' ~/.ldel|xargs rm 
+  echo "">~/.ldel
+else
+  for i
+    do
+      p=$i
+      echo "$p"|grep "^/" >>/dev/null||p=`echo $PWD``echo /`$p
+      mv "$p" "`dirname "$p"``echo /.rm.``basename "$p"`" >>/dev/null && \
+         echo "`dirname "$p"``echo /.rm.``basename "$p"`    $p">>~/.ldel
+    done
+fi

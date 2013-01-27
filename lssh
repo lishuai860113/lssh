@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+#usage: lssh [node|domain|ip] [command|module]
+
+if [ $# -lt 2 ]
+then
+    echo "lssh needs 2 arguments!"
+    echo "usage: lssh [node|domain|ip] [command|module]"
+    exit 34
+fi
+
+node=/etc/lssh/node
+module=/etc/lssh/module
+uri=http://192.168.32.42:8000
+
+until [ $# -eq 1 ]
+do
+    if [[ -e $node/$1 ]]
+    then
+        cat $node/$1 >> /tmp/$$.txt
+    else
+        echo $1 >> /tmp/$$.txt
+    fi
+    
+    shift
+done
+
+sort /tmp/$$.txt |uniq >/tmp/$$.t
+
+for i in `cat /tmp/$$.t`
+do
+   {
+    if [[ -e $module/$1 ]]
+    then
+        echo "$i run module $1:"
+        ssh $i "wget $uri/$1 &>/dev/null ; chmod +x $1; ./$1; rm -rf $1"
+    else
+        echo "$i run command $1:"
+        ssh $i "$1"
+    fi
+   } &
+done
+
+wait 
+rm -rf /tmp/$$.txt /tmp/$$.t

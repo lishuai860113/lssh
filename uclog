@@ -1,0 +1,37 @@
+#!/bin/tcsh
+set us=lishuai860113
+echo t1000.T1000/Solaris
+echo x4100.X4100/Solaris
+echo solaris.PE860/Solaris
+echo fedora.PE860/Fedora
+echo ubuntu.PE860/Ubuntu
+echo freebsd.PE860/FreeBSD
+echo aix.P510/AIX
+echo -n "Please enter choice:"
+set choice=$<
+switch ($choice)
+  case t1000:
+    ssh `echo $us`@t1000.unix-center.net
+    breaksw
+  case x4100:
+    ssh `echo $us`@x4100.unix-center.net
+    breaksw
+  case solaris:
+    ssh `echo $us`@solaris.unix-center.net
+    breaksw
+  case fedora:
+    ssh `echo $us`@fedora.unix-center.net
+    breaksw
+  case ubuntu:
+    ssh `echo $us`@ubuntu.unix-center.net
+    breaksw
+  case freebsd:
+    ssh `echo $us`@freebsd.unix-center.net
+    breaksw
+  case aix:
+    ssh `echo $us`@aix.unix-center.net
+    breaksw
+  default:
+    echo Invalid Option
+    breaksw
+endsw

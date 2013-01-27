@@ -1,0 +1,21 @@
+#!/bin/bash
+
+passwd="0"
+old_arg=`stty -g`
+stty eof ""
+trap "" INT TSTP
+
+passwd=$1
+
+while [ : ];do
+clear
+echo "please input password:"
+stty -echo
+read i
+if [ "$i" = "$passwd" ];then
+stty $old_arg
+trap INT TSTP
+stty echo
+exit
+fi
+done

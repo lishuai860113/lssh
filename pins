@@ -1,0 +1,13 @@
+#!/bin/bash
+net=$1
+begin=$2
+end=$3
+while [ $begin != $end ];do
+        ping `echo $net`.`echo $begin` -c 1 > /dev/null && \
+        echo "`echo $net`.`echo $begin` is running!" >> /tmp/ipscan.tmp &
+        begin=$(($begin+1))
+done
+wait
+cat /tmp/ipscan.tmp | sort -t"." -k4n
+rm /tmp/ipscan.tmp
+

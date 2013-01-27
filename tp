@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#动态刷新命令，呵呵。实现类似top命令的功能。按'q'退出。
+#3_1
+
+for (( ; ; ))
+do
+clear
+stty icanon
+$*
+stty -icanon
+stty -echo
+stty min 0
+stty time 10
+read  i
+if [ "$i" == "q" ] 
+then
+stty icanon
+stty echo
+stty min 1
+stty time 0
+exit 0 
+fi
+done
+

@@ -1,0 +1,8 @@
+#!/bin/bash
+#test connect to g.cn
+
+for((a=1;a<=60000;a++))
+do
+echo -n "ping g.cn: "
+ping g.cn
+done

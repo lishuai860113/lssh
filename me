@@ -1,0 +1,19 @@
+#!/bin/bash
+#edit mount file
+#write by lishuai
+
+dir=`mktemp -d`
+
+loop=`kpartx -av $3 |awk "{print \\$8;exit}"`
+
+bd=/dev/mapper/loop${loop: -1}p$2
+
+mount $bd $dir
+
+cd $dir;$1
+
+cd -
+
+umount $dir && rm -rf $dir
+
+sleep 3;kpartx -d $3

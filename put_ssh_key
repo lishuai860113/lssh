@@ -1,0 +1,24 @@
+#!/usr/bin/expect -f
+set ipaddress [lindex $argv 0]
+set passwd [lindex $argv 1]
+set timeout 30
+
+
+spawn scp /root/.ssh/id_rsa.pub $ipaddress:/root/
+expect {
+"yes/no" { send "yes\r"; exp_continue}
+"password:" { send "$passwd\r" }
+}
+interact
+
+spawn ssh $ipaddress
+expect "*password:"
+send "$passwd\r"
+expect "*#"
+send "mkdir .ssh\r"
+expect "*#"
+send "cat id_rsa.pub >> .ssh/authorized_keys\r"
+expect "*#"
+send "rm -rf id_rsa.pub\r"
+expect "*#"
+send "exit\r"

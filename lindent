@@ -1,0 +1,9 @@
+#!/bin/bash
+if [[ ! -f .lindent  ]];
+then
+indent *.c >>/dev/null
+else
+find . -newer .lindent -a -name "*.c" -exec indent {} \;
+fi
+touch .lindent
+rm *~

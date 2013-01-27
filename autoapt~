@@ -1,0 +1,6 @@
+##!/bin/bash
+#/usr/bin/python /usr/lib/command-not-found -- $1 2>/tmp/autoapt.tmp
+#`tail -1 /tmp/autoapt.tmp`
+#rm /tmp/autoapt.tmp
+echo $_
+#apt-get install $_

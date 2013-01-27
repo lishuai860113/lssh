@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#強力殺進程腳本,對付無限下蛋子進程
+
+while true
+do
+killall $1
+done
