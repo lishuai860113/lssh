@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ln -s bin/.vim .vim
-ln -s .vim/.vimrc .vimrc
-ln -s bin/.bashlrc .bashlrc
-grep ".bashlrc" .bashrc || echo ". .bashlrc" >> .bashrc
+ln -s bin/.vim ~/.vim
+ln -s .vim/.vimrc ~/.vimrc
+ln -s bin/.bashlrc ~/.bashlrc
+grep ".bashlrc" ~/.bashrc || echo ". ~/.bashlrc" >> ~/.bashrc
