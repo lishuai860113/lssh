@@ -1,0 +1,17 @@
+export PATH=$PATH:~/bin
+alias cx="chmod +x" 
+PS1='`a=$?;if [ $a -ne 0 ]; then a="  "$a; echo -ne "\[\e[s\e[1A\e[$((COLUMNS-2))G\e[31m\e[1;41m${a:(-3)}\e[u\]\[\e[0m\e[7m\e[2m\]"; fi`\[\e[1;32m\]\u@\h:\[\e[0m\e[1;34m\]\W\[\e[1;34m\]\$ \[\e[0m\]'
+set -o vi
+alias alert_helper='history|tail -n1|sed -e "s/^\s*[0-9]\+\s*//" -e "s/;\s*alert$//"' 
+alias alert='notify-send -i /usr/share/icons/gnome/32x32/apps/gnome-terminal.png "[$?] $(alert_helper)"'
+alias adb='/opt/android-sdk-linux/platform-tools/adb'
+alias vboxstart="VBoxHeadless -startvm"
+function vboxsave()
+{
+  VBoxManage controlvm ${1} savestate
+}
+
+alias ep="echo 00847aa3"
+alias gf="/opt/goagent/goagent-goagent-35fc288/local/proxy.py"
+alias fgssh='nohup ssh -qTfnN -D7070 lisux.tk'
+export openwrt="192.168.1.31"
