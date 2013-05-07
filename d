@@ -5,7 +5,7 @@ for (( ; ; ))
 do
 clear
 stty icanon
-date | awk '{print $5}'
+date | awk '{print $4}'
 stty -icanon
 stty -echo
 stty min 0
