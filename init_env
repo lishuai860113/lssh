@@ -1,8 +1,8 @@
 #!/bin/bash
 
-ln -s bin/.vim ~/.vim
-ln -s .vim/.vimrc ~/.vimrc
-ln -s bin/.bashlrc ~/.bashlrc
+ln -s ~/bin/.vim ~/.vim
+ln -s ~/bin/.vim/.vimrc ~/.vimrc
+ln -s ~/bin/.bashlrc ~/.bashlrc
 grep ".bashlrc" ~/.bashrc || echo ". ~/.bashlrc" >> ~/.bashrc
 
-ln -s bin/.tmux.conf .tmux.conf
+ln -s ~/bin/.tmux.conf ~/.tmux.conf
