@@ -19,3 +19,7 @@ endfunction
 
 nmap wm :WMToggle<CR>
 cs add cscope.out
+
+set autoindent
+syntax on
+filetype on
