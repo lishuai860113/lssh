@@ -11,14 +11,18 @@ import cgitb; cgitb.enable()
 
 form = cgi.FieldStorage()
 #status, output = commands.getstatusoutput("")
+id = os.getpid()
 
-
-def psg():
+def psg(date="17",type="cpu"):
     'create a jpg file for sar use gnuplot'
     
-    status, output = commands.getstatusoutput("mkdir tmp;mkdir img")
-    status, output = commands.getstatusoutput("LANG=C;sar -f /var/log/sa/sa15 |grep -P '\d\d:\d\d:\d\d' |grep -v '%' |awk '{print $1,$8}'>tmp/test.sar")
-    #status, output = commands.getstatusoutput("LANG=C;sar -f /var/log/sa/sa27 |grep -P '\d\d:\d\d:\d\d' |grep -v '%' |awk '{print $1,$8}'>tmp/test.sar")
+    #status, output = commands.getstatusoutput("mkdir tmp;mkdir img")
+    status, output = commands.getstatusoutput("LANG=C;sar -f /var/log/sa/sa"+date+" |grep -P '\d\d:\d\d:\d\d' |grep -v '%' |awk '{print $1,$8}'>tmp/"+str(id)+".sar")
+    gpstr='echo -e "set term jpeg\\nset output \\"img/'+str(id)+'.jpg\\"\\nset timefmt \\"%H:%M:%S\\"\\nset xdata time\\nplot \\"tmp/'+str(id)+'.sar\\" using 1:2 with lines"|gnuplot'
+    print gpstr
+    status, output = commands.getstatusoutput(gpstr)
+    time.sleep(1)
+    print '<img src="../img/'+str(id)+'.jpg"/>'
 
 
 
@@ -53,5 +57,5 @@ except:
     sys.exit(0)
 
 ph()
-
+psg(date,type)
 pt()
