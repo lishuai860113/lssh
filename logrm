@@ -1,0 +1,40 @@
+#!/bin/bash
+
+while getopts ":c:d:s:h" optname
+  do
+    case "$optname" in
+      "c")
+        count=$OPTARG
+        echo "Option $optname has value $OPTARG"
+        ;;
+      "d")
+        days=$OPTARG
+        echo "Option $optname has value $OPTARG"
+        ;;
+      "s")
+        size=$$OPTARG
+        echo "Option $optname has value $OPTARG"
+        ;;
+      "h")
+        echo "help:logrm -c count -d days -s disk_size dir"
+        ;;
+      "?")
+        echo "Unknown option $OPTARG"
+        ;;
+      ":")
+        echo "No argument value for option $OPTARG"
+        ;;
+      *)
+        echo "Unknown error while processing options"
+        ;;
+    esac
+  done
+
+shift $(($OPTIND - 1))
+
+dir=$1
+[ $dir ] || exit
+[ $count ] && echo "cd $dirs;let tmp=`ls |wc -l`-$count;ls -t |tail -n $tmp|xargs rm -rf" 
+[ $days ] && echo find $dir -mtime +$dirs |xargs rm -rf
+[ $size ] && echo size
+
