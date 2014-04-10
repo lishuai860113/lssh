@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+def_days=20
 while getopts ":c:d:s:h" optname
   do
     case "$optname" in
@@ -12,7 +14,7 @@ while getopts ":c:d:s:h" optname
         echo "Option $optname has value $OPTARG"
         ;;
       "s")
-        size=$$OPTARG
+        size=$OPTARG
         echo "Option $optname has value $OPTARG"
         ;;
       "h")
@@ -33,8 +35,38 @@ while getopts ":c:d:s:h" optname
 shift $(($OPTIND - 1))
 
 dir=$1
-[ $dir ] || exit
-[ $count ] && echo "cd $dirs;let tmp=`ls |wc -l`-$count;ls -t |tail -n $tmp|xargs rm -rf" 
-[ $days ] && echo find $dir -mtime +$dirs |xargs rm -rf
-[ $size ] && echo size
+mount_root_dir=$dir
+until [ df -h |grep -q "${mount_root_dir}$" ]
+do
+    mount_root_dir=`dirname $mount_root_dir`
+done
+
+if [ $dir ] 
+then
+    :
+else
+    exit
+fi
+
+if [ $count ] 
+then
+    echo "cd $dir;let tmp=`ls |wc -l`-$count;ls -t |tail -n $tmp|xargs rm -rf" 
+fi
+
+if [ $days ] 
+then
+    echo "find $dir -mtime +$days |xargs rm -rf"
+    def_days=$days
+fi
+
+if [ $size ] 
+then
+    current_size=`df -h |grep "${mount_root_dir}$" |awk '{print $5}' |sed -e "s/%//"`
+    while [ $current_size > $size ]
+    do
+        echo "find $dir -mtime +$def_days |xargs rm -rf
+        let def_days=def_days-1
+    done
+fi
+
 
