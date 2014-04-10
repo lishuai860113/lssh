@@ -64,7 +64,7 @@ then
     current_size=`df -h |grep "${mount_root_dir}$" |awk '{print $5}' |sed -e "s/%//"`
     while [ $current_size > $size ]
     do
-        echo "find $dir -mtime +$def_days |xargs rm -rf
+        echo "find $dir -mtime +$def_days |xargs rm -rf"
         let def_days=def_days-1
     done
 fi
