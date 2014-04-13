@@ -36,9 +36,12 @@ shift $(($OPTIND - 1))
 
 dir=$1
 mount_root_dir=$dir
-until [ df -h |grep -q "${mount_root_dir}$" ]
+
+df -h |grep -q "${mount_root_dir}$"
+until [ $? -eq 0 ]
 do
     mount_root_dir=`dirname $mount_root_dir`
+    df -h |grep -q "${mount_root_dir}$"
 done
 
 if [ $dir ] 
@@ -62,10 +65,12 @@ fi
 if [ $size ] 
 then
     current_size=`df -h |grep "${mount_root_dir}$" |awk '{print $5}' |sed -e "s/%//"`
-    while [ $current_size > $size ]
+    while [[ $current_size -gt $size ]] && [[ $def_days -gt 2 ]]
     do
         echo "find $dir -mtime +$def_days |xargs rm -rf"
-        let def_days=def_days-1
+        let def_days=$def_days-1
+        current_size=`df -h |grep "${mount_root_dir}$" |awk '{print $5}' |sed -e "s/%//"`
+        echo $def_days $current_size
     done
 fi
 
