@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#write by shuaili
 
 def_days=20
 while getopts ":c:d:s:h" optname
@@ -7,15 +7,15 @@ while getopts ":c:d:s:h" optname
     case "$optname" in
       "c")
         count=$OPTARG
-        echo "Option $optname has value $OPTARG"
+        #echo "Option $optname has value $OPTARG"
         ;;
       "d")
         days=$OPTARG
-        echo "Option $optname has value $OPTARG"
+        #echo "Option $optname has value $OPTARG"
         ;;
       "s")
         size=$OPTARG
-        echo "Option $optname has value $OPTARG"
+        #echo "Option $optname has value $OPTARG"
         ;;
       "h")
         echo "help:logrm -c count -d days -s disk_size dir"
@@ -48,17 +48,20 @@ if [ $dir ]
 then
     :
 else
+    echo "help:logrm -c count -d days -s disk_size dir"
     exit
 fi
 
 if [ $count ] 
 then
-    echo "cd $dir;let tmp=`ls |wc -l`-$count;ls -t |tail -n $tmp|xargs rm -rf" 
+    #echo "cd $dir;let tmp=`ls |wc -l`-$count;ls -t |tail -n $tmp|xargs rm -f" 
+    cd $dir;let tmp=`ls |wc -l`-$count;ls -t |tail -n $tmp|xargs rm -f
 fi
 
 if [ $days ] 
 then
-    echo "find $dir -mtime +$days |xargs rm -rf"
+    #echo "find $dir -mtime +$days |xargs rm -rf"
+    find $dir -mtime +$days |xargs rm -rf
     def_days=$days
 fi
 
@@ -67,10 +70,10 @@ then
     current_size=`df -h |grep "${mount_root_dir}$" |awk '{print $5}' |sed -e "s/%//"`
     while [[ $current_size -gt $size ]] && [[ $def_days -gt 2 ]]
     do
-        echo "find $dir -mtime +$def_days |xargs rm -rf"
+        #echo "find $dir -mtime +$def_days |xargs rm -rf"
         let def_days=$def_days-1
         current_size=`df -h |grep "${mount_root_dir}$" |awk '{print $5}' |sed -e "s/%//"`
-        echo $def_days $current_size
+        #echo $def_days $current_size
     done
 fi
 
