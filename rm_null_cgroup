@@ -1,0 +1,10 @@
+#!/bin/bash
+#write by shuaili
+
+for i in `lscgroup`
+do
+#gro=${i##*:}
+#subsys=${i%%:*}
+#echo $subsys $gro
+grep -q $i /proc/*/cgroup || cgdelete $i
+done
