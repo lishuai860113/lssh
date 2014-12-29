@@ -5,7 +5,7 @@ if (test $# = 0) then
 else
     while (test $# -gt 0)
     do
-        gnome-open "$1"
+        gvfs-open "$1"
         shift
     done
 fi
