@@ -61,7 +61,7 @@ fi
 if [ $days ] 
 then
     #echo "find $dir -mtime +$days |xargs rm -rf"
-    find $dir -mtime +$days |xargs rm -rf
+    find $dir -type f -mtime +$days |xargs rm -rf
     def_days=$days
 fi
 
@@ -71,10 +71,10 @@ then
     while [[ $current_size -gt $size ]] && [[ $def_days -gt 2 ]]
     do
         #echo "find $dir -mtime +$def_days |xargs rm -rf"
+        find $dir -type f -mtime +$def_days |xargs rm -rf
         let def_days=$def_days-1
         current_size=`df -h |grep "${mount_root_dir}$" |awk '{print $5}' |sed -e "s/%//"`
         #echo $def_days $current_size
     done
 fi
-
 
