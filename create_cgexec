@@ -36,7 +36,7 @@ do
     cgset -r $subsys.$pro=$value /$gro
 done
 
-arg=$(awk -v gro="$gro"  -F '.' '{print "-g "$1":"gro}' $tmpfile)
+arg=$(cat $tmpfile | awk -F '.' '{print $1}'|uniq|awk -v gro="$gro"  -F '.' '{print "-g "$1":"gro}')
 cgexec $arg --sticky $execstr
 
 rm $tmpfile

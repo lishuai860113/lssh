@@ -36,8 +36,10 @@ do
     cgset -r $subsys.$pro=$value /$gro
 done
 
-arg=$(awk -v gro="$gro"  -F '.' '{print "-g "$1":"gro}' $tmpfile)
-cgclassify $arg --sticky $att_id
+pidlist=`ps -eLf |awk -v pid=$att_id '{if($2==pid){print $4}}'`
+arg=$(cat $tmpfile | awk -F '.' '{print $1}'|uniq|awk -v gro="$gro"  -F '.' '{print "-g "$1":"gro}')
+cgclassify $arg --sticky $att_id $pidlist
+
 
 rm $tmpfile
  
