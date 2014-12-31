@@ -13,7 +13,8 @@ echo $1
 exit $2
 }
 
-gro=$$
+uuid || yum install -y uuid ||apt-get install -y uuid
+gro=$(uuid |awk -F '-' '{print $1}')
 
 for i in $(cat $tmpfile)
 do
