@@ -1,0 +1,49 @@
+#!/bin/bash
+#write by shuaili
+
+while getopts ":p:f:x:d:h:v" optname
+  do
+    case "$optname" in
+      "p")
+        cgroup_arg=$OPTARG
+        ;;
+      "f")
+        filename=$OPTARG
+        ;;
+      "x")
+        exec_str=$OPTARG
+        ;;
+      "d")
+        attach_pid=$OPTARG
+        ;;
+      "h")
+        echo "help:$0 -p \"arg1=v1 arg2=v2 ..\" -f argfilename -x execstr -d pids"
+        ;;
+      "v")
+        debuglabel=true
+        ;;
+      "?")
+        echo "Unknown option $OPTARG"
+        ;;
+      ":")
+        echo "No argument value for option $OPTARG"
+        ;;
+      *)
+        echo "Unknown error while processing options"
+        ;;
+    esac
+  done
+
+error_message()
+{
+  echo $1
+  exit $2
+}
+
+
+
+
+if [ $ ]
+then
+  :
+fi
