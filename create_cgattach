@@ -1,0 +1,44 @@
+#!/bin/bash
+#write by shuali
+
+cgarg=$1
+tmpfile=$(mktemp)
+att_id=$2
+
+echo $cgarg | tr " " "\n" | sort >$tmpfile
+
+error_message()
+{
+echo $1
+exit $2
+}
+
+uuid || yum install -y uuid ||apt-get install -y uuid
+gro=$(uuid |awk -F '-' '{print $1}')
+
+for i in $(cat $tmpfile)
+do
+    value=${i##*=}
+    j=${i%%=*}
+    subsys=${j%%.*}
+    pro=${j#*.}
+    cgget -g $subsys / |grep -q "$subsys.$pro:" || error_message "$subsys.$pro is not found in $subsys" 23
+done
+
+for i in $(cat $tmpfile)
+do
+    value=${i##*=}
+    j=${i%%=*}
+    subsys=${j%%.*}
+    pro=${j#*.}
+    #echo subsys=$subsys pro=$pro value=$value
+    cgcreate -g $subsys:$gro
+    cgset -r $subsys.$pro=$value /$gro
+done
+
+arg=$(awk -v gro="$gro"  -F '.' '{print "-g "$1":"gro}' $tmpfile)
+cgclassify $arg --sticky $att_id
+
+rm $tmpfile
+ 
+
