@@ -1,8 +1,8 @@
 #!/bin/bash
 #write by shuaili
 
-while getopts ":p:f:x:d:h:v" optname
-  do
+while getopts ":p:f:x:d:rhv" optname
+do
     case "$optname" in
       "p")
         cgroup_arg=$OPTARG
@@ -15,6 +15,9 @@ while getopts ":p:f:x:d:h:v" optname
         ;;
       "d")
         attach_pid=$OPTARG
+        ;;
+      "r")
+        rm_null=true
         ;;
       "h")
         echo "help:$0 -p \"arg1=v1 arg2=v2 ..\" -f argfilename -x execstr -d pids"
@@ -32,7 +35,7 @@ while getopts ":p:f:x:d:h:v" optname
         echo "Unknown error while processing options"
         ;;
     esac
-  done
+done
 
 error_message()
 {
@@ -40,10 +43,73 @@ error_message()
   exit $2
 }
 
+tmpfile=$(mktemp)
 
-
-
-if [ $ ]
+if [[ $cgroup_arg && $filename ]]
 then
-  :
+  error_message "-p and -f is error" 23
 fi
+
+if [[ $exec_str && $attach_pid ]]
+then
+  error_message "-p and -f is error" 24
+fi
+
+if [[ $cgroup_arg ]]
+then
+  echo $cgroup_arg | tr " " "\n" | sort >$tmpfile
+fi
+
+if [[ $filename ]]
+then
+  cat $filename | tr " " "\n" | sort >$tmpfile
+fi
+
+if [[ $exec_str || $attach_pid ]]
+then
+  uuid || yum install -y uuid ||apt-get install -y uuid
+  gro=$(uuid |awk -F '-' '{print $1}')
+  for i in $(cat $tmpfile)
+  do
+    value=${i##*=}
+    j=${i%%=*}
+    subsys=${j%%.*}
+    pro=${j#*.}
+    cgget -g $subsys / |grep -q "$subsys.$pro:" || error_message "$subsys.$pro is not found in $subsys" 25
+  done
+  for i in $(cat $tmpfile)
+  do
+    value=${i##*=}
+    j=${i%%=*}
+    subsys=${j%%.*}
+    pro=${j#*.}
+    #echo subsys=$subsys pro=$pro value=$value
+    cgcreate -g $subsys:$gro
+    cgset -r $subsys.$pro=$value /$gro
+  done
+  arg=$(cat $tmpfile | awk -F '.' '{print $1}'|uniq|awk -v gro="$gro"  -F '.' '{print "-g "$1":"gro}')
+fi
+
+
+if [[ $exec_str ]]
+then
+  cgexec $arg --sticky $exec_str
+  rm $tmpfile
+fi
+
+if [[ $attach_pid ]]
+then
+  pidlist=`ps -eLf |awk -v pid=$attach_id '{if($2==pid){print $4}}'`
+  cgclassify $arg --sticky $attach_id $pidlist
+  rm $tmpfile
+fi
+
+
+if [[ $rm_null ]]
+then
+  for i in `lscgroup`
+  do
+    grep -q $i /proc/*/cgroup || cgdelete $i
+  done
+fi
+
