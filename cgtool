@@ -52,7 +52,7 @@ fi
 
 if [[ $exec_str && $attach_pid ]]
 then
-  error_message "-p and -f is error" 24
+  error_message "-x and -d is error" 24
 fi
 
 if [[ $cgroup_arg ]]
@@ -99,8 +99,8 @@ fi
 
 if [[ $attach_pid ]]
 then
-  pidlist=`ps -eLf |awk -v pid=$attach_id '{if($2==pid){print $4}}'`
-  cgclassify $arg --sticky $attach_id $pidlist
+  pidlist=`ps -eLf |awk -v pid=$attach_pid '{if($2==pid){print $4}}'`
+  cgclassify $arg --sticky $attach_pid $pidlist
   rm $tmpfile
 fi
 
