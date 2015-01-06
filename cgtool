@@ -1,7 +1,7 @@
 #!/bin/bash
 #write by shuaili
 
-while getopts ":p:f:x:d:rhv" optname
+while getopts ":p:f:x:d:r:n:mhv" optname
 do
     case "$optname" in
       "p")
@@ -9,6 +9,9 @@ do
         ;;
       "f")
         filename=$OPTARG
+        ;;
+      "m")
+        rmpid=true
         ;;
       "x")
         exec_str=$OPTARG
@@ -18,6 +21,9 @@ do
         ;;
       "r")
         rm_null=true
+        ;;
+      "n")
+        groupname=$OPTARG
         ;;
       "h")
         echo "help:$0 -p \"arg1=v1 arg2=v2 ..\" -f argfilename -x execstr -d pids"
@@ -67,8 +73,13 @@ fi
 
 if [[ $exec_str || $attach_pid ]]
 then
-  uuid || yum install -y uuid ||apt-get install -y uuid
-  gro=$(uuid |awk -F '-' '{print $1}')
+  if [[ $groupname ]]
+  then
+    gro=$groupname
+  else
+    uuid || yum install -y uuid ||apt-get install -y uuid
+    gro=$(uuid |awk -F '-' '{print $1}')
+  fi
   for i in $(cat $tmpfile)
   do
     value=${i##*=}
@@ -90,6 +101,11 @@ then
   arg=$(cat $tmpfile | awk -F '.' '{print $1}'|uniq|awk -v gro="$gro"  -F '.' '{print "-g "$1":"gro}')
 fi
 
+if [[ $rmpid ]]
+then
+  for i in `lscgroup |awk -F ':' '{print $1}'|sort |uniq`;do echo "-g $i:/ " ;done >$tmpfile
+  arg=$(cat $tmpfile)
+fi
 
 if [[ $exec_str ]]
 then
