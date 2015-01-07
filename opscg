@@ -1,0 +1,43 @@
+#!/bin/bash
+#write by shuaili
+
+while getopts ":x:m:d:p:lchv" optname
+do
+    case "$optname" in
+      "x")
+        exec_str=$OPTARG
+        ;;
+      "m")
+        groupname=$OPTARG
+        ;;
+      "d")
+        rmpid=true
+        ;;
+      "p")
+        procpid=$OPTARG
+        ;;
+      "l")
+        list_cg=true
+        ;;
+      "c")
+        create_cg=true
+        ;;
+      "h")
+        echo "help:$0 "
+        ;;
+      "v")
+        debuglabel=true
+        ;;
+      "?")
+        echo "Unknown option $OPTARG"
+        ;;
+      ":")
+        echo "No argument value for option $OPTARG"
+        ;;
+      *)
+        echo "Unknown error while processing options"
+        ;;
+    esac
+done
+
+
