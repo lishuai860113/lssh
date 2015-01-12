@@ -45,9 +45,12 @@ blkio.weight=128
 
 for i in $base
 do
-  pra=${a%%=*}
-  value=${a#*=}
-  
+  pra=${i%%=*}
+  value=${i#*=}
+  maxv=$(cgget -r $pra / | grep -v "/:" |awk '{print $NF}')
+  let ts=$maxv/$value
+  [[ $mints ]] || mints=$ts
+  [[ $ts -lt $mints ]] && mints=$ts
 done
 
-
+echo mints is $mints
