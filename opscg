@@ -1,12 +1,10 @@
 #!/bin/bash
 #write by shuaili
 
-while getopts ":x:m:d:p:lchv" optname
+
+while getopts ":m:d:p:lchv" optname
 do
     case "$optname" in
-      "x")
-        exec_str=$OPTARG
-        ;;
       "m")
         groupname=$OPTARG
         ;;
@@ -38,6 +36,18 @@ do
         echo "Unknown error while processing options"
         ;;
     esac
+done
+
+base="
+cpu.shares=256
+blkio.weight=128
+"
+
+for i in $base
+do
+  pra=${a%%=*}
+  value=${a#*=}
+  
 done
 
 
