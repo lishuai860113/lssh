@@ -1,15 +1,20 @@
 #!/bin/bash
 #write by shuaili
 
-
-while getopts ":m:d:p:lchv" optname
+while getopts ":b:m:p:irdlchv" optname
 do
     case "$optname" in
+      "b")
+        basefile=$OPTARG
+        ;;
       "m")
         groupname=$OPTARG
         ;;
       "d")
         rmpid=true
+        ;;
+      "r")
+        rm_cg=true
         ;;
       "p")
         procpid=$OPTARG
@@ -38,7 +43,8 @@ do
     esac
 done
 
-base="
+[[ $basefile ]] && base=$(cat basefile)
+[[ $basefile ]] || base="
 cpu.shares=256
 blkio.weight=128
 "
@@ -49,8 +55,86 @@ do
   value=${i#*=}
   maxv=$(cgget -r $pra / | grep -v "/:" |awk '{print $NF}')
   let ts=$maxv/$value
-  [[ $mints ]] || mints=$ts
-  [[ $ts -lt $mints ]] && mints=$ts
+  [[ $maxts ]] || maxts=$ts
+  [[ $ts -lt $maxts ]] && maxts=$ts
 done
+[[ $debuglabel ]] && echo maxts is $maxts
 
-echo mints is $mints
+if [[ $create_cg ]]
+then
+  i=1
+  while [[ $i -le $maxts ]]
+  do
+    gn=${i}_times
+    for j in $base
+    do
+      pra=${j%%=*}
+      cg=${pra%%.*}
+      let value=${j#*=}*$i
+      cgcreate -g $cg:$gn
+      cgset -r $pra=$value /$gn
+    done
+    let i=i*2
+  done
+fi
+
+if [[ $list_cg ]]
+then
+  i=1
+  while [[ $i -le $maxts ]]
+  do
+    gn=${i}_times
+    echo -e -n "$gn\t\t"
+    for j in $base
+    do
+      pra=${j%%=*}
+      cg=${pra%%.*}
+      value=${j#*=}
+      dis=$(cgget -r $pra /$gn|grep -v "$gn"|sed -e "s/ //")
+      echo -e -n "$dis\t\t"
+    done
+    echo
+    let i=i*2
+  done
+fi
+
+if [[ $rm_cg ]]
+then
+  i=1
+  while [[ $i -le $maxts ]]
+  do
+    gn=${i}_times
+    for j in $base
+    do
+      pra=${j%%=*}
+      cg=${pra%%.*}
+      value=${j#*=}
+      cgdelete -g $cg:$gn
+    done
+    echo
+    let i=i*2
+  done
+fi
+
+if [[ $procpid ]]
+then
+  pidlist=`ps -eLf |awk -v pid=$procpid '{if($2==pid){print $4}}'`
+fi
+
+
+if [[ $groupname ]]
+then
+  for i in $base
+  do
+    pra=${i%%=*}
+    cg=${pra%%.*}
+    value=${i#*=}
+    cgclassify -g $cg:$groupname --sticky $procpid $pidlist
+  done
+fi
+
+if [[ $rmpid ]]
+then
+  :
+fi
+
