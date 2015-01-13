@@ -1,0 +1,32 @@
+#!/bin/bash
+#write by shuaili
+
+domain=$1
+port=${2-"80"}
+[[ $domain ]] || exit 34
+echo domain=$domain port=$port
+
+#find domain return ip
+back_end_domain()
+{
+domain=$1
+dig +short $domain
+}
+
+
+#check service port 
+check_service()
+{
+:
+}
+
+label=true
+
+result=$(back_end_domain $domain)
+echo $result
+
+while $label
+do
+  
+  label=false
+done
