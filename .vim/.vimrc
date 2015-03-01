@@ -18,3 +18,5 @@ function! NERDTree_IsValid()
 endfunction
 
 nmap wm :WMToggle<CR>
+filetype plugin indent on
+syntax on
