@@ -16,3 +16,4 @@ alias gf="/opt/goagent/goagent-goagent-35fc288/local/proxy.py"
 alias fgssh='nohup ssh -qTfnN -D7070 lisux.tk'
 export openwrt="192.168.1.31"
 alias js='python -m json.tool'
+export GOPATH="/usr/local/go/"
