@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import json
+import pycurl
+import httplib
+import sys
+
+if len(sys.argv) == 3:
+    path = sys.argv[1]
+    key = sys.argv[2]
+else:
+    print "please input two arg"
+    sys.exit(25)
+
+conn = httplib.HTTPConnection("127.0.0.1","4001")
+conn.request("GET", path)
+r = conn.getresponse()
+data = r.read()
+#print data
+dic = json.loads(data)
+
+for k in key.split("."):
+    dic = dic[k]
+    if k == key.split(".")[-1]:
+        print dic
