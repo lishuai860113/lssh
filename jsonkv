@@ -4,22 +4,27 @@ import json
 import pycurl
 import httplib
 import sys
+import commands
 
-if len(sys.argv) == 3:
-    path = sys.argv[1]
-    key = sys.argv[2]
+if len(sys.argv) == 4:
+    url_pre = sys.argv[1]
+    path = sys.argv[2]
+    key = sys.argv[3]
 else:
-    print "please input two arg"
+    print "please input three arg"
     sys.exit(25)
 
-conn = httplib.HTTPConnection("127.0.0.1","4001")
-conn.request("GET", path)
-r = conn.getresponse()
-data = r.read()
-#print data
-dic = json.loads(data)
+url = url_pre+path
+cmd = "curl " + url + " 2>/dev/null"
+status, output = commands.getstatusoutput(cmd)
+#print output
+dic = json.loads(output)
 
-for k in key.split("."):
+for k in key.split("/"):
     dic = dic[k]
-    if k == key.split(".")[-1]:
-        print dic
+    if k == key.split("/")[-1]:
+	if type(dic) == type([]):
+            for i in dic:
+                print i
+        else:
+            print dic
